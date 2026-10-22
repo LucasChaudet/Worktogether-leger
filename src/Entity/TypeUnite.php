@@ -14,12 +14,12 @@ class TypeUnite
     #[ORM\Column]
     private ?int $id = null;
 
-    /** Exemple : Serveur web, Base de données, Stockage. */
+
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
     private ?string $libelle = null;
 
-    /** Couleur hexadécimale, par exemple #1E88E5. */
+
     #[ORM\Column(length: 7)]
     #[Assert\CssColor(formats: Assert\CssColor::HEX_LONG)]
     private ?string $couleur = null;

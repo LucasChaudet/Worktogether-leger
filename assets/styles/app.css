@@ -1,3 +1,95 @@
 body {
-    background-color: skyblue;
+    font-family: Arial, sans-serif;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 16px 0;
+    border-bottom: 1px solid #ccc;
+}
+
+nav a,
+nav span {
+    margin-left: 12px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 6px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+form div {
+    margin-bottom: 12px;
+}
+
+label {
+    display: block;
+}
+
+.alert {
+    margin: 12px 0;
+    padding: 8px;
+    border: 1px solid #ccc;
+}
+
+.alert-success {
+    background: #e6f4e6;
+}
+
+.alert-danger {
+    background: #fbe6e6;
+}
+
+form label {
+    margin-top: 8px;
+}
+
+/* Pastille de couleur du type d'unité */
+.couleur {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 1px solid #999;
+}
+
+/* Une baie : 42 cases, U42 en haut et U01 en bas */
+.baie {
+    display: inline-block;
+    width: 220px;
+    margin: 0 16px 16px 0;
+    vertical-align: top;
+}
+
+.baie ol {
+    display: flex;
+    flex-direction: column-reverse;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border: 1px solid #333;
+}
+
+.baie li {
+    padding: 0 4px;
+    font-size: 11px;
+    border-top: 1px solid #ddd;
+}
+
+.baie li.a-moi {
+    font-weight: bold;
+    background: #ddd;
 }

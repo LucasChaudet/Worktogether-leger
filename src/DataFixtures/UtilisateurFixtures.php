@@ -28,6 +28,7 @@ class UtilisateurFixtures extends Fixture implements DependentFixtureInterface
                 ->setPrenom($prenom)
                 ->setNom($nom)
                 ->setEmail($email)
+                ->setIsVerified(true)
                 ->setRole($this->getReference($role, Role::class));
             $utilisateur->setMotDePasse($this->hasher->hashPassword($utilisateur, $motDePasse));
             $manager->persist($utilisateur);

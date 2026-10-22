@@ -47,7 +47,9 @@ class ClientFixtures extends Fixture
         $client = (new Client())
             ->setPrenom($prenom)
             ->setNom($nom)
-            ->setEmail($email);
+            ->setEmail($email)
+            ->setRoles(['ROLE_CLIENT'])
+            ->setIsVerified(true);
         $client->setMotDePasse($this->hasher->hashPassword($client, self::MOT_DE_PASSE));
         $manager->persist($client);
 

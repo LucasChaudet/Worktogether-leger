@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>WorkTogether Data Solutions</h1>
+    <p>Location de baies dans nos datacenters : baie complète, demi-baie, quart de baie ou unités à l'unité.</p>
+
+    <h2>Nos offres</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Offre</th>
+                <th>Nombre d'unités</th>
+                <th>Prix mensuel</th>
+                <th>Prix annuel</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for offre in offres %}
+                <tr>
+                    <td>{{ offre.libelle }}</td>
+                    <td>{{ offre.nbUnites }}</td>
+                    <td>{{ offre.prixMensuel|number_format(0, ',', ' ') }} €{% if offre.remise > 0 %} (-{{ offre.remise }} %){% endif %}</td>
+                    <td>{{ offre.calculerPrix(true)|number_format(0, ',', ' ') }} €</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
