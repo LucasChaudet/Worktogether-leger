@@ -7,9 +7,7 @@
 
 | Outil | À quoi il sert |
 |---|---|
-| **Issues GitHub** | Une issue = une tâche. Elle contient la liste des étapes à faire (cases à cocher). |
-| **Labels** | Ranger les tâches par thème (installation, base de données, authentification...). |
-| **GitHub Project (Kanban)** | Voir où en est chaque tâche : à faire, en cours, terminée. |
+| **GitHub Project (Kanban)** | Une carte = une tâche. La carte contient la liste des étapes à faire (cases à cocher). Le tableau montre où en est chaque tâche : à faire, en cours, terminée. |
 | **Vue Roadmap (Gantt)** | Voir les tâches sur un calendrier grâce aux dates de début et de fin. |
 
 ## Fonctionnement du Kanban
@@ -32,7 +30,7 @@ Règles que je suis :
 
 1. Je ne travaille que sur une ou deux tâches à la fois (colonne In progress).
 2. Quand je commence une tâche, je la déplace de Ready vers In progress.
-3. Quand toutes les cases de la tâche sont cochées, je ferme l'issue : elle passe dans Done.
+3. Quand toutes les cases de la carte sont cochées, je la déplace dans Done.
 4. Je mets le tableau à jour à chaque séance.
 
 ## Découpage du projet
@@ -47,13 +45,13 @@ Le travail demandé est découpé en 5 grandes parties, puis en tâches plus pet
 | 4 | Installation | Installer la base de données avec Docker | Terminée |
 | 5 | Base de données | Créer les entités | Terminée |
 | 6 | Base de données | Créer les fixtures | Terminée |
-| 7 | Gestion de projet | Organiser le projet dans un tableau Kanban | En cours |
-| 8 | Espace client | Faire la mise en page commune du site | À faire |
-| 9 | Authentification | Se connecter et se déconnecter | À faire |
-| 10 | Authentification | Créer un compte client | À faire |
-| 11 | Espace client | Afficher les unités du client | À faire |
-| 12 | Espace client | Modifier le nom et le type d'une unité | À faire |
-| 13 | Espace client | Afficher les baies du client | À faire |
+| 7 | Gestion de projet | Organiser le projet dans un tableau Kanban | Terminée |
+| 8 | Espace client | Faire la mise en page commune du site | Terminée |
+| 9 | Authentification | Se connecter et se déconnecter | Terminée |
+| 10 | Authentification | Créer un compte client | Terminée |
+| 11 | Espace client | Afficher les unités du client | Terminée |
+| 12 | Espace client | Modifier le nom et le type d'une unité | Terminée |
+| 13 | Espace client | Afficher les baies du client | Terminée |
 | 14 | Espace client | Afficher les commandes du client | À faire |
 | 15 | Suite (situation 2) | Présenter la société et les offres | À faire |
 | 16 | Suite (situation 2) | Passer une commande | À faire |
@@ -83,23 +81,23 @@ gantt
     Créer les fixtures                     :done, t6, 2026-10-16, 1d
 
     section Gestion de projet
-    Tableau Kanban et planning             :active, t7, 2026-10-22, 2d
+    Tableau Kanban et planning             :done, t7, 2026-10-22, 1d
 
     section Authentification
-    Mise en page commune du site           :t8, 2026-10-23, 2026-10-26
-    Se connecter et se déconnecter         :t9, 2026-10-26, 2026-10-29
-    Créer un compte client                 :t10, 2026-10-29, 2026-11-02
+    Mise en page commune du site           :done, t8, 2026-10-22, 1d
+    Se connecter et se déconnecter         :done, t9, 2026-10-22, 1d
+    Créer un compte client                 :done, t10, 2026-10-22, 1d
 
     section Espace client
-    Afficher les unités du client          :t11, 2026-11-02, 2026-11-05
-    Modifier le nom et le type d'une unité :t12, 2026-11-05, 2026-11-09
-    Afficher les baies du client           :t13, 2026-11-09, 2026-11-13
-    Afficher les commandes du client       :t14, 2026-11-13, 2026-11-16
+    Afficher les unités du client          :done, t11, 2026-10-22, 1d
+    Modifier le nom et le type d'une unité :done, t12, 2026-10-22, 1d
+    Afficher les baies du client           :done, t13, 2026-10-22, 1d
+    Afficher les commandes du client       :t14, 2026-10-26, 2026-10-29
 
     section Suite (situation 2)
-    Présenter la société et les offres     :t15, 2026-11-16, 2026-11-20
-    Passer une commande                    :t16, 2026-11-20, 2026-11-30
-    Modifier ses informations              :t17, 2026-11-30, 2026-12-04
-    API pour les clients                   :t18, 2026-12-04, 2026-12-18
+    Présenter la société et les offres     :t15, 2026-10-29, 2026-11-02
+    Passer une commande                    :t16, 2026-11-02, 2026-11-12
+    Modifier ses informations              :t17, 2026-11-12, 2026-11-16
+    API pour les clients                   :t18, 2026-11-16, 2026-11-30
 ```
 
