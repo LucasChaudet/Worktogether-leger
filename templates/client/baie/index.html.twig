@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes baies{% endblock %}
+
+{% block body %}
+    <h1>Mes baies</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Baie</th>
+                <th>Mes unités dans cette baie</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for baie in baies %}
+            <tr>
+                <td>{{ baie.numero }}</td>
+                <td>{{ nbUnites[baie.id] }} / {{ baie.nbUnites }}</td>
+                <td>
+                    <a href="{{ path('app_client_baie_show', {'id': baie.id}) }}">voir</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">Vous n'avez d'unité dans aucune baie.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

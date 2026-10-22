@@ -15,6 +15,10 @@
         <header>
             <a href="{{ path('app_home') }}"><strong>WorkTogether</strong></a>
             <nav>
+                {% if is_granted('ROLE_CLIENT') %}
+                    <a href="{{ path('app_client_unite_index') }}">Mes unités</a>
+                    <a href="{{ path('app_client_baie_index') }}">Mes baies</a>
+                {% endif %}
                 {% if app.user %}
                     <span>{{ app.user }}</span>
                     <a href="{{ path('app_logout') }}">Déconnexion</a>

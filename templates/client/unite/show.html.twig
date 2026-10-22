@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Unité {{ unite.emplacement }}{% endblock %}
+
+{% block body %}
+    <h1>Unité {{ unite.emplacement }}</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Emplacement</th>
+                <td>{{ unite.emplacement }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ unite.nom }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>
+                    {% if unite.typeUnite %}
+                        <span class="couleur" style="background: {{ unite.typeUnite.couleur }}"></span>
+                        {{ unite.typeUnite.libelle }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>État</th>
+                <td>{{ unite.etat }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Historique des interventions</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Début</th>
+                <th>Fin</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for intervention in unite.interventions %}
+            <tr>
+                <td>{{ intervention.type }}</td>
+                <td>{{ intervention.description }}</td>
+                <td>{{ intervention.dateHeureDebut|date('d/m/Y H:i') }}</td>
+                <td>{{ intervention.dateHeureFin ? intervention.dateHeureFin|date('d/m/Y H:i') : 'En cours' }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">Aucune intervention.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_client_unite_index') }}">retour à la liste</a>
+
+    <a href="{{ path('app_client_unite_edit', {'id': unite.id}) }}">modifier</a>
+{% endblock %}

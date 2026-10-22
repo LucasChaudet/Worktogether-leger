@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier l'unité {{ unite.emplacement }}{% endblock %}
+
+{% block body %}
+    <h1>Modifier l'unité {{ unite.emplacement }}</h1>
+
+    {{ include('client/unite/_form.html.twig', {'button_label': 'Enregistrer'}) }}
+
+    <a href="{{ path('app_client_unite_index') }}">retour à la liste</a>
+{% endblock %}
