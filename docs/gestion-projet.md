@@ -14,16 +14,24 @@
 
 ## Fonctionnement du Kanban
 
-Le tableau a trois colonnes :
+Le tableau a cinq colonnes :
 
-- **Todo** : la tâche est prévue mais pas commencée.
-- **In Progress** : je travaille dessus en ce moment.
+- **Backlog** : idée ou tâche prévue pour plus tard.
+- **Ready** : tâche prête à être commencée (c'est la prochaine à faire).
+- **In progress** : je travaille dessus en ce moment.
+- **In review** : la tâche est finie, il reste à la vérifier ou à la faire relire.
 - **Done** : la tâche est terminée.
+
+Chaque tâche a aussi :
+
+- une **priorité** : P0 (le plus important), P1, P2 (moins urgent) ;
+- une **taille** : XS (moins d'une journée) à L (plus d'une semaine) ;
+- une **date de début** et une **date de fin** (*Start date* et *Target date*), utilisées par la vue Roadmap.
 
 Règles que je suis :
 
-1. Je ne travaille que sur une ou deux tâches à la fois (colonne In Progress).
-2. Quand je commence une tâche, je la déplace dans In Progress.
+1. Je ne travaille que sur une ou deux tâches à la fois (colonne In progress).
+2. Quand je commence une tâche, je la déplace de Ready vers In progress.
 3. Quand toutes les cases de la tâche sont cochées, je ferme l'issue : elle passe dans Done.
 4. Je mets le tableau à jour à chaque séance.
 
