@@ -103,4 +103,3 @@ gantt
     API pour les clients                   :t18, 2026-12-04, 2026-12-18
 ```
 
-Les dates sont des prévisions : je les ajuste dans le GitHub Project si une tâche prend plus ou moins de temps que prévu.
