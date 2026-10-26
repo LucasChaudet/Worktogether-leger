@@ -11,23 +11,22 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/client/unite')]
 final class UniteController extends AbstractController
 {
     #[Route(name: 'app_client_unite_index', methods: ['GET'])]
-    public function index(#[CurrentUser] Client $client, UniteRepository $uniteRepository): Response
+    public function index(UniteRepository $uniteRepository): Response
     {
         return $this->render('client/unite/index.html.twig', [
-            'unites' => $uniteRepository->findLoueesParClient($client),
+            'unites' => $uniteRepository->findLoueesParClient($this->getClient()),
         ]);
     }
 
     #[Route('/{id}', name: 'app_client_unite_show', methods: ['GET'])]
-    public function show(#[CurrentUser] Client $client, Unite $unite): Response
+    public function show(Unite $unite): Response
     {
-        $this->verifierProprietaire($client, $unite);
+        $this->verifierProprietaire($unite);
 
         return $this->render('client/unite/show.html.twig', [
             'unite' => $unite,
@@ -35,9 +34,9 @@ final class UniteController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_client_unite_edit', methods: ['GET', 'POST'])]
-    public function edit(#[CurrentUser] Client $client, Request $request, Unite $unite, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Unite $unite, EntityManagerInterface $entityManager): Response
     {
-        $this->verifierProprietaire($client, $unite);
+        $this->verifierProprietaire($unite);
 
         $form = $this->createForm(UniteType::class, $unite);
         $form->handleRequest($request);
@@ -56,9 +55,18 @@ final class UniteController extends AbstractController
         ]);
     }
 
-    private function verifierProprietaire(Client $client, Unite $unite): void
+    private function getClient(): Client
     {
-        if ($unite->getCommandeEnCours()?->getClient() !== $client) {
+        /** @var Client $client */
+        $client = $this->getUser();
+
+        return $client;
+    }
+
+
+    private function verifierProprietaire(Unite $unite): void
+    {
+        if ($unite->getCommandeEnCours()?->getClient() !== $this->getClient()) {
             throw $this->createAccessDeniedException('Cette unité ne vous appartient pas.');
         }
     }
