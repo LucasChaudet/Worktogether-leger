@@ -7,21 +7,26 @@ use App\Entity\Unite;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-/**
- * 30 baies (B001 à B030) de 42 unités chacune (U01 à U42).
- */
 class BaieFixtures extends Fixture
 {
-    private const NB_BAIES = 30;
-
     public function load(ObjectManager $manager): void
     {
-        for ($b = 1; $b <= self::NB_BAIES; ++$b) {
-            $baie = (new Baie())->setNumero(sprintf('B%03d', $b));
-            for ($u = 1; $u <= Baie::NB_UNITES; ++$u) {
-                $baie->addUnite((new Unite())->setNumero($u));
-            }
+        // 30 baies : B001, B002, ... B030
+        for ($b = 1; $b <= 30; $b++) {
+            $baie = new Baie();
+            $baie->setNumero('B' . str_pad($b, 3, '0', STR_PAD_LEFT));
             $manager->persist($baie);
+
+            // 42 unités par baie : U01, U02, ... U42
+            for ($u = 1; $u <= 42; $u++) {
+                $unite = new Unite();
+                $unite->setNumero($u);
+                $baie->addUnite($unite);
+                $manager->persist($unite);
+
+                // exemple de référence : unite_B001_1
+                $this->addReference('unite_' . $baie->getNumero() . '_' . $u, $unite);
+            }
         }
 
         $manager->flush();

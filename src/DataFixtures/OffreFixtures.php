@@ -6,36 +6,27 @@ use App\Entity\Offre;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-/**
- * Offres commerciales du sujet.
- */
 class OffreFixtures extends Fixture
 {
-    /** libellé => [nombre d'unités, prix mensuel, remise %] */
-    public const OFFRES = [
-        'Base' => [1, 100, 0],
-        'Start-up' => [10, 900, 10],
-        'PME' => [21, 1680, 20],
-        'Entreprise' => [42, 2940, 30],
-    ];
-
     public function load(ObjectManager $manager): void
     {
-        foreach (self::OFFRES as $libelle => [$nbUnites, $prix, $remise]) {
-            $offre = (new Offre())
-                ->setLibelle($libelle)
-                ->setNbUnites($nbUnites)
-                ->setPrixMensuel($prix)
-                ->setRemise($remise);
+        $offres = [
+            ['libelle' => 'Base', 'nbUnites' => 1, 'prixMensuel' => 100, 'remise' => 0],
+            ['libelle' => 'Start-up', 'nbUnites' => 10, 'prixMensuel' => 900, 'remise' => 10],
+            ['libelle' => 'PME', 'nbUnites' => 21, 'prixMensuel' => 1680, 'remise' => 20],
+            ['libelle' => 'Entreprise', 'nbUnites' => 42, 'prixMensuel' => 2940, 'remise' => 30],
+        ];
+
+        foreach ($offres as $data) {
+            $offre = new Offre();
+            $offre->setLibelle($data['libelle']);
+            $offre->setNbUnites($data['nbUnites']);
+            $offre->setPrixMensuel($data['prixMensuel']);
+            $offre->setRemise($data['remise']);
             $manager->persist($offre);
-            $this->addReference(self::reference($libelle), $offre);
+            $this->addReference('offre_' . $data['libelle'], $offre);
         }
 
         $manager->flush();
-    }
-
-    public static function reference(string $libelle): string
-    {
-        return 'offre_'.$libelle;
     }
 }

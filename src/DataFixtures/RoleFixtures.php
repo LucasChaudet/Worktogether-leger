@@ -6,24 +6,22 @@ use App\Entity\Role;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-/**
- * Hiérarchie des rôles du personnel : Administrateur > Comptable.
- */
 class RoleFixtures extends Fixture
 {
-    public const COMPTABLE = 'role_comptable';
-    public const ADMINISTRATEUR = 'role_administrateur';
-
     public function load(ObjectManager $manager): void
     {
-        $comptable = (new Role())->setLibelle('COMPTABLE');
-        $administrateur = (new Role())->setLibelle('ADMINISTRATEUR')->setInclut($comptable);
-
+        $comptable = new Role();
+        $comptable->setLibelle('COMPTABLE');
         $manager->persist($comptable);
-        $manager->persist($administrateur);
-        $manager->flush();
+        $this->addReference('role_COMPTABLE', $comptable);
 
-        $this->addReference(self::COMPTABLE, $comptable);
-        $this->addReference(self::ADMINISTRATEUR, $administrateur);
+        // L'administrateur a aussi les droits du comptable
+        $administrateur = new Role();
+        $administrateur->setLibelle('ADMINISTRATEUR');
+        $administrateur->setInclut($comptable);
+        $manager->persist($administrateur);
+        $this->addReference('role_ADMINISTRATEUR', $administrateur);
+
+        $manager->flush();
     }
 }

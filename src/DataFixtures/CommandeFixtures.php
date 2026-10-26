@@ -7,100 +7,75 @@ use App\Entity\Commande;
 use App\Entity\Offre;
 use App\Entity\TypeUnite;
 use App\Entity\Unite;
-use App\Repository\UniteRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use Faker\Factory;
 
-/**
- * Commandes des clients. Les unités sont attribuées de façon contiguë
- * (premières unités libres dans l'ordre des baies) pour éviter la fragmentation.
- */
 class CommandeFixtures extends Fixture implements DependentFixtureInterface
 {
-    /** Unités du client de démonstration : nom => type. */
-    private const UNITES_DEMO = [
-        'web-front-01' => 'Serveur web',
-        'web-front-02' => 'Serveur web',
-        'api-01' => 'Serveur web',
-        'bdd-principale' => 'Base de données',
-        'bdd-replica' => 'Base de données',
-        'stockage-01' => 'Stockage',
-        'stockage-02' => 'Stockage',
-        'switch-01' => 'Réseau',
-    ];
-
     public function load(ObjectManager $manager): void
     {
-        /** @var UniteRepository $uniteRepository */
-        $uniteRepository = $manager->getRepository(Unite::class);
+        $now = new \DateTimeImmutable('today');
 
-        // Client de démonstration : une commande Start-up en cours, une Base annuelle, une Base terminée
-        $demo = $this->getReference(ClientFixtures::DEMO, Client::class);
-        $startup = $this->creerCommande($manager, $uniteRepository, $demo, 'Start-up', false, new \DateTimeImmutable('first day of this month'));
-        $base = $this->creerCommande($manager, $uniteRepository, $demo, 'Base', true, new \DateTimeImmutable('-2 months'));
-        $this->creerCommande($manager, $uniteRepository, $demo, 'Base', false, new \DateTimeImmutable('-1 year'));
+        // Chaque commande réserve des unités qui se suivent dans une baie
+        $commandes = [
+            ['client' => 'client@worktogether.fr', 'offre' => 'Start-up', 'annuel' => false, 'dateDebut' => $now->modify('-10 days'), 'baie' => 'B001', 'unites' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],
+            ['client' => 'client@worktogether.fr', 'offre' => 'Base', 'annuel' => true, 'dateDebut' => $now->modify('-2 months'), 'baie' => 'B001', 'unites' => [11]],
+            ['client' => 'client@worktogether.fr', 'offre' => 'Base', 'annuel' => false, 'dateDebut' => $now->modify('-1 year'), 'baie' => 'B030', 'unites' => [42]],
+            ['client' => 'marie.durand@gmail.com', 'offre' => 'Base', 'annuel' => false, 'dateDebut' => $now->modify('-5 days'), 'baie' => 'B001', 'unites' => [12]],
+            ['client' => 'paul.lefebvre@gmail.com', 'offre' => 'PME', 'annuel' => true, 'dateDebut' => $now->modify('-3 months'), 'baie' => 'B002', 'unites' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]],
+            ['client' => 'sophie.bernard@gmail.com', 'offre' => 'Start-up', 'annuel' => false, 'dateDebut' => $now->modify('-15 days'), 'baie' => 'B003', 'unites' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],
+            ['client' => 'karim.benali@gmail.com', 'offre' => 'Base', 'annuel' => true, 'dateDebut' => $now->modify('-1 month'), 'baie' => 'B001', 'unites' => [13]],
+        ];
 
-        $unitesDemo = [...$startup->getUnites(), ...$base->getUnites()];
-        foreach (array_keys(self::UNITES_DEMO) as $i => $nom) {
-            $type = $this->getReference(TypeUniteFixtures::reference(self::UNITES_DEMO[$nom]), TypeUnite::class);
-            $unitesDemo[$i]->setNom($nom)->setTypeUnite($type);
-            $this->addReference(self::referenceUniteDemo($i), $unitesDemo[$i]);
+        foreach ($commandes as $data) {
+            $offre = $this->getReference('offre_' . $data['offre'], Offre::class);
+
+            // Une commande dure 1 an si elle est annuelle, sinon 1 mois
+            if ($data['annuel']) {
+                $dateFin = $data['dateDebut']->modify('+1 year');
+            } else {
+                $dateFin = $data['dateDebut']->modify('+1 month');
+            }
+
+            $commande = new Commande();
+            $commande->setClient($this->getReference('client_' . $data['client'], Client::class));
+            $commande->setOffre($offre);
+            $commande->setAnnuel($data['annuel']);
+            $commande->setDateCommande($data['dateDebut']);
+            $commande->setDateDebut($data['dateDebut']);
+            $commande->setDateFin($dateFin);
+            $commande->setPrix($offre->calculerPrix($data['annuel']));
+            foreach ($data['unites'] as $numero) {
+                $commande->addUnite($this->getReference('unite_' . $data['baie'] . '_' . $numero, Unite::class));
+            }
+            $manager->persist($commande);
         }
-        $unitesDemo[3]->setEtat(Unite::ETAT_INCIDENT);
-        $unitesDemo[6]->setEtat(Unite::ETAT_MAINTENANCE);
 
-        // Autres clients : une commande en cours chacun
-        $faker = Factory::create('fr_FR');
-        $faker->seed(2026);
-        for ($i = 0; $i < ClientFixtures::NB_CLIENTS; ++$i) {
-            $client = $this->getReference(ClientFixtures::reference($i), Client::class);
-            $debut = new \DateTimeImmutable('-'.$faker->numberBetween(0, 20).' days');
-            $this->creerCommande($manager, $uniteRepository, $client, $faker->randomElement(['Base', 'Start-up', 'PME']), $faker->boolean(), $debut);
+        // Le client de démonstration a donné un nom et un type à certaines de ses unités
+        $unitesClient = [
+            ['unite' => 'unite_B001_1', 'nom' => 'web-front-01', 'type' => 'Serveur web', 'etat' => 'OK'],
+            ['unite' => 'unite_B001_2', 'nom' => 'web-front-02', 'type' => 'Serveur web', 'etat' => 'OK'],
+            ['unite' => 'unite_B001_3', 'nom' => 'api-01', 'type' => 'Serveur web', 'etat' => 'OK'],
+            ['unite' => 'unite_B001_4', 'nom' => 'bdd-principale', 'type' => 'Base de données', 'etat' => 'Incident'],
+            ['unite' => 'unite_B001_5', 'nom' => 'bdd-replica', 'type' => 'Base de données', 'etat' => 'OK'],
+            ['unite' => 'unite_B001_6', 'nom' => 'stockage-01', 'type' => 'Stockage', 'etat' => 'OK'],
+            ['unite' => 'unite_B001_7', 'nom' => 'stockage-02', 'type' => 'Stockage', 'etat' => 'Maintenance'],
+            ['unite' => 'unite_B001_8', 'nom' => 'switch-01', 'type' => 'Réseau', 'etat' => 'OK'],
+        ];
+
+        foreach ($unitesClient as $data) {
+            $unite = $this->getReference($data['unite'], Unite::class);
+            $unite->setNom($data['nom']);
+            $unite->setTypeUnite($this->getReference('type_' . $data['type'], TypeUnite::class));
+            $unite->setEtat($data['etat']);
         }
 
         $manager->flush();
-    }
-
-    public static function referenceUniteDemo(int $i): string
-    {
-        return 'unite_demo_'.$i;
     }
 
     public function getDependencies(): array
     {
         return [ClientFixtures::class, OffreFixtures::class, BaieFixtures::class, TypeUniteFixtures::class];
-    }
-
-    private function creerCommande(ObjectManager $manager, UniteRepository $uniteRepository, Client $client, string $libelleOffre, bool $annuel, \DateTimeImmutable $debut): Commande
-    {
-        $offre = $this->getReference(OffreFixtures::reference($libelleOffre), Offre::class);
-        $debut = $debut->setTime(0, 0);
-        $fin = $debut->modify($annuel ? '+1 year -1 day' : '+1 month -1 day');
-
-        $commande = (new Commande())
-            ->setDateCommande($debut->modify('-1 day')->setTime(10, 0))
-            ->setDateDebut($debut)
-            ->setDateFin($fin)
-            ->setAnnuel($annuel)
-            ->setPrix($offre->calculerPrix($annuel))
-            ->setOffre($offre);
-        $client->addCommande($commande);
-
-        // Une commande terminée reprend les dernières unités libres, une commande en cours les premières
-        $libres = $uniteRepository->findLibres();
-        $terminee = $fin < new \DateTimeImmutable('today');
-        $unites = $terminee
-            ? array_slice($libres, -$offre->getNbUnites())
-            : array_slice($libres, 0, $offre->getNbUnites());
-        foreach ($unites as $unite) {
-            $commande->addUnite($unite);
-        }
-
-        $manager->persist($commande);
-        $manager->flush();
-
-        return $commande;
     }
 }
