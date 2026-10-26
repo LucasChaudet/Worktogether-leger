@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/client/baie')]
-final class BaieController extends AbstractController
+final class BaieController extends ClientBaseController
 {
 
     #[Route(name: 'app_client_baie_index', methods: ['GET'])]
@@ -49,13 +49,5 @@ final class BaieController extends AbstractController
             'baie' => $baie,
             'mesUnites' => $mesUnites,
         ]);
-    }
-
-    private function getClient(): Client
-    {
-        /** @var Client $client */
-        $client = $this->getUser();
-
-        return $client;
     }
 }

@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/client/unite')]
-final class UniteController extends AbstractController
+final class UniteController extends ClientBaseController
 {
     #[Route(name: 'app_client_unite_index', methods: ['GET'])]
     public function index(UniteRepository $uniteRepository): Response
@@ -53,14 +53,6 @@ final class UniteController extends AbstractController
             'unite' => $unite,
             'form' => $form,
         ]);
-    }
-
-    private function getClient(): Client
-    {
-        /** @var Client $client */
-        $client = $this->getUser();
-
-        return $client;
     }
 
 
