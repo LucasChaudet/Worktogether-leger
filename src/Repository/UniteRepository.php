@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Entity\Baie;
 use App\Entity\Client;
 use App\Entity\Unite;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -20,13 +19,12 @@ class UniteRepository extends ServiceEntityRepository
 
     /**
      * Unités louées actuellement par un client (commande en cours), triées par emplacement.
-     * Avec une baie en paramètre, seules les unités de cette baie sont renvoyées.
      *
      * @return list<Unite>
      */
-    public function findLoueesParClient(Client $client, ?Baie $baie = null): array
+    public function findLoueesParClient(Client $client): array
     {
-        $qb = $this->createQueryBuilder('u')
+        return $this->createQueryBuilder('u')
             ->addSelect('b', 't')
             ->innerJoin('u.baie', 'b')
             ->leftJoin('u.typeUnite', 't')
@@ -36,13 +34,9 @@ class UniteRepository extends ServiceEntityRepository
             ->setParameter('client', $client)
             ->setParameter('aujourdhui', new \DateTimeImmutable('today'), 'date_immutable')
             ->orderBy('b.numero', 'ASC')
-            ->addOrderBy('u.numero', 'ASC');
-
-        if (null !== $baie) {
-            $qb->andWhere('u.baie = :baie')->setParameter('baie', $baie);
-        }
-
-        return $qb->getQuery()->getResult();
+            ->addOrderBy('u.numero', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 
     /**
