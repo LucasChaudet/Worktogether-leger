@@ -7,10 +7,12 @@
 
     <p>Vos unités sont en gras. L'unité U01 est en bas de la baie.</p>
 
+    {% set mesIds = mesUnites|map(u => u.id) %}
+
     <div class="baie">
         <ol>
             {% for unite in baie.unites %}
-                {% if mesUnites[unite.id] is defined %}
+                {% if unite.id in mesIds %}
                     <li class="a-moi">
                         <a href="{{ path('app_client_unite_show', {'id': unite.id}) }}">U{{ '%02d'|format(unite.numero) }}</a>
                         {% if unite.typeUnite %}<span class="couleur" style="background: {{ unite.typeUnite.couleur }}"></span>{% endif %}

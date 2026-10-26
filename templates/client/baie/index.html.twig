@@ -14,12 +14,12 @@
             </tr>
         </thead>
         <tbody>
-        {% for baie in baies %}
+        {% for ligne in baies %}
             <tr>
-                <td>{{ baie.numero }}</td>
-                <td>{{ nbUnites[baie.id] }} / {{ baie.nbUnites }}</td>
+                <td>{{ ligne.baie.numero }}</td>
+                <td>{{ ligne.nbUnites }} / {{ ligne.baie.nbUnites }}</td>
                 <td>
-                    <a href="{{ path('app_client_baie_show', {'id': baie.id}) }}">voir</a>
+                    <a href="{{ path('app_client_baie_show', {'id': ligne.baie.id}) }}">voir</a>
                 </td>
             </tr>
         {% else %}
