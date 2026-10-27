@@ -6,11 +6,13 @@ use App\Entity\Client;
 use App\Entity\Unite;
 use App\Form\UniteType;
 use App\Repository\UniteRepository;
+use App\Security\Voter\UniteVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/client/unite')]
 final class UniteController extends ClientBaseController
@@ -24,20 +26,18 @@ final class UniteController extends ClientBaseController
     }
 
     #[Route('/{id}', name: 'app_client_unite_show', methods: ['GET'])]
+    #[IsGranted(UniteVoter::VIEW, 'unite')]
     public function show(Unite $unite): Response
     {
-        $this->verifierProprietaire($unite);
-
         return $this->render('client/unite/show.html.twig', [
             'unite' => $unite,
         ]);
     }
 
     #[Route('/{id}/edit', name: 'app_client_unite_edit', methods: ['GET', 'POST'])]
+    #[IsGranted(UniteVoter::EDIT, 'unite')]
     public function edit(Request $request, Unite $unite, EntityManagerInterface $entityManager): Response
     {
-        $this->verifierProprietaire($unite);
-
         $form = $this->createForm(UniteType::class, $unite);
         $form->handleRequest($request);
 
@@ -53,13 +53,5 @@ final class UniteController extends ClientBaseController
             'unite' => $unite,
             'form' => $form,
         ]);
-    }
-
-
-    private function verifierProprietaire(Unite $unite): void
-    {
-        if ($unite->getCommandeEnCours()?->getClient() !== $this->getClient()) {
-            throw $this->createAccessDeniedException('Cette unité ne vous appartient pas.');
-        }
     }
 }
