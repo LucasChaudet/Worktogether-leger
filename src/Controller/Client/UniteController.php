@@ -39,8 +39,8 @@ final class UniteController extends ClientBaseController
     public function edit(Request $request, Unite $unite, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(UniteType::class, $unite);
-        $form->handleRequest($request);
 
+        $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
