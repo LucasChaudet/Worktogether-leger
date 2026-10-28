@@ -32,7 +32,9 @@ final class UniteVoter extends Voter
         switch ($attribute) {
             case self::VIEW:
             case self::EDIT:
-                return $subject->getCommandeEnCours()?->getClient() === $user;
+                $client = $subject->getCommandeEnCours()?->getClient();
+
+                return null !== $client?->getId() && $client->getId() === $user->getId();
         }
 
         return false;
