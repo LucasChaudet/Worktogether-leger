@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commande du {{ commande.dateCommande|date('d/m/Y') }}{% endblock %}
+
+{% block body %}
+    <h1>Commande du {{ commande.dateCommande|date('d/m/Y') }}</h1>
+
+    <table class="table">
+        <tbody>
+        <tr>
+            <th>Offre</th>
+            <td>{{ commande.offre.libelle }} ({{ commande.offre.nbUnites }} unité(s))</td>
+        </tr>
+        <tr>
+            <th>Période</th>
+            <td>du {{ commande.dateDebut|date('d/m/Y') }} au {{ commande.dateFin|date('d/m/Y') }}</td>
+        </tr>
+        <tr>
+            <th>Paiement</th>
+            <td>{{ commande.annuel ? 'Annuel (-10 %)' : 'Mensuel' }}</td>
+        </tr>
+        <tr>
+            <th>Prix</th>
+            <td>{{ commande.prix }} €</td>
+        </tr>
+        <tr>
+            <th>Statut</th>
+            <td>{{ commande.enCours ? 'En cours' : 'Terminée' }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2>Unités réservées</h2>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Emplacement</th>
+            <th>Nom</th>
+            <th>État</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for unite in commande.unites %}
+            <tr>
+                <td>{{ unite.emplacement }}</td>
+                <td>{{ unite.nom }}</td>
+                <td>{{ unite.etat }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_client_commande_index') }}">retour à la liste</a>
+{% endblock %}
