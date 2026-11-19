@@ -6,4 +6,8 @@
 
     <h2>Nos offres</h2>
     {{ include('offre/_table.html.twig') }}
+
+    {% if not app.user or is_granted('ROLE_CLIENT') %}
+        <p><a href="{{ path('app_client_commande_new') }}">Commander</a></p>
+    {% endif %}
 {% endblock %}
